@@ -1,4 +1,5 @@
 using BankAPI.Data;
+using BankAPI.Service;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// DbContext
 builder.Services.AddSqlServer<BankContext>(builder.Configuration.GetConnectionString("BankConnection"));
+
+// Services Layer
+builder.Services.AddScoped<ClientService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

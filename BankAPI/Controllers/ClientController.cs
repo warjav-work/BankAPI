@@ -1,5 +1,6 @@
 ﻿using BankAPI.Data;
 using BankAPI.Data.BankModels;
+using BankAPI.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +10,23 @@ namespace BankAPI.Controllers
     [ApiController]
     public class ClientController : ControllerBase
     {
-        private readonly BankContext _context;
-        public ClientController(BankContext context)
+        private readonly ClientService _service;
+        public ClientController(ClientService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
         public IEnumerable<Client> Get()
         {
-            return _context.Clients.ToList();
+            return _service.Get();
         }
 
         [HttpGet("{id}")]
         public ActionResult<Client> GetById(int id)
         {
-            var client = _context.Clients.Find(id);
-            if(client is null)
+            var client = _service.GetById(id);
+            if (client is null)
             {
                 return NotFound();
             }
@@ -34,44 +35,44 @@ namespace BankAPI.Controllers
         [HttpPost]
         public IActionResult Post(Client client)
         {
-            _context.Clients.Add(client);
-            _context.SaveChanges();
+            var newClient = _service.Create(client);
 
-            return CreatedAtAction(nameof(GetById), new { id = client.Id }, client);
+            return CreatedAtAction(nameof(GetById), new { id = newClient.Id }, newClient);
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, Client client)
         {
-            if(id != client.Id)
+            if (id != client.Id)
             {
                 return BadRequest();
             }
-            var existingClient = _context.Clients.Find(id);
-            if (existingClient is null)
+            var clientToUpdate = _service.GetById(id);
+            if (clientToUpdate is not null)
+            {
+                _service.Update(client);
+                return NoContent();
+            }
+            else
             {
                 return NotFound();
-            }
-            existingClient.Name = client.Name;
-            existingClient.PhoneNumber = client.PhoneNumber;
-            existingClient.Email = client.Email;            
-            _context.SaveChanges();
+            }           
 
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult delete(int id)
-        {            
-            var existingClient = _context.Clients.Find(id);
-            if (existingClient is null)
+        public IActionResult Delete(int id)
+        {
+            var clientToDelete = _service.GetById(id);
+            if (clientToDelete is not null)
+            {
+                _service.Delete(id);
+                return NoContent();
+            }
+            else
             {
                 return NotFound();
             }
-            _context.Clients.Remove(existingClient);
-            _context.SaveChanges();
-
-            return Ok();
         }
     }
 }
