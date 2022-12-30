@@ -17,15 +17,15 @@ namespace BankAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Client> Get()
+        public async Task<IEnumerable<Client>> Get()
         {
-            return _service.Get();
+            return await _service.Get();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Client> GetById(int id)
+        public async Task<ActionResult<Client>> GetById(int id)
         {
-            var client = _service.GetById(id);
+            var client = await _service.GetById(id);
             if (client is null)
             {
                 return NotFound();
@@ -33,24 +33,24 @@ namespace BankAPI.Controllers
             return client;
         }
         [HttpPost]
-        public IActionResult Post(Client client)
+        public async Task<IActionResult> Post(Client client)
         {
-            var newClient = _service.Create(client);
+            var newClient = await _service.Create(client);
 
             return CreatedAtAction(nameof(GetById), new { id = newClient.Id }, newClient);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Client client)
+        public async Task<IActionResult> Update(int id, Client client)
         {
             if (id != client.Id)
             {
                 return BadRequest();
             }
-            var clientToUpdate = _service.GetById(id);
+            var clientToUpdate = await _service.GetById(id);
             if (clientToUpdate is not null)
             {
-                _service.Update(client);
+                await _service.Update(client);
                 return NoContent();
             }
             else
@@ -61,12 +61,12 @@ namespace BankAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var clientToDelete = _service.GetById(id);
+            var clientToDelete = await _service.GetById(id);
             if (clientToDelete is not null)
             {
-                _service.Delete(id);
+                await _service.Delete(id);
                 return NoContent();
             }
             else

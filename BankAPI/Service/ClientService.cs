@@ -1,5 +1,6 @@
 ﻿using BankAPI.Data;
 using BankAPI.Data.BankModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankAPI.Service
 {
@@ -10,47 +11,47 @@ namespace BankAPI.Service
         {
             _context = context;
         }
-        public IEnumerable<Client> Get()
+        public async Task<IEnumerable<Client>> Get()
         {
-            return _context.Clients.ToList();
+            return await _context.Clients.ToListAsync();
         }
 
 
-        public Client? GetById(int id)
+        public async Task<Client?> GetById(int id)
         {
-            return _context.Clients.Find(id);
+            return await _context.Clients.FindAsync(id);
         }
 
-        public Client Create(Client newClient)
+        public async Task<Client> Create(Client newClient)
         {
             _context.Clients.Add(newClient);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return newClient;
         }
 
 
-        public void Update(Client client)
+        public async Task Update(Client client)
         {
-            var existingClient = _context.Clients.Find(client.Id);
+            var existingClient = await _context.Clients.FindAsync(client.Id);
             if (existingClient is not null)
             {
                 existingClient.Name = client.Name;
                 existingClient.PhoneNumber = client.PhoneNumber;
                 existingClient.Email = client.Email;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
             }
         }
 
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var existingClient = _context.Clients.Find(id);
+            var existingClient = await _context.Clients.FindAsync(id);
             if (existingClient is not null)
             {
                 _context.Clients.Remove(existingClient);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
             }
 
