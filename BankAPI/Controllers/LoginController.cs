@@ -43,7 +43,9 @@ namespace BankAPI.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name,admin.Name),
-                new Claim(ClaimTypes.Email,admin.Email)
+                new Claim(ClaimTypes.Email,admin.Email),
+                // Autenticacion basada en claims
+                new Claim("AdminType", admin.AdminType)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("JWT:Key").Value));

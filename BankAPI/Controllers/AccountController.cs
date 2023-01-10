@@ -41,6 +41,7 @@ namespace BankAPI.Controllers
 
         }
 
+        [Authorize(Policy ="SuperAdmin")]
         [HttpPost]
         public async Task<IActionResult> Create(AccountDtoIn account)
         {
@@ -54,6 +55,7 @@ namespace BankAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newAccount.Id }, newAccount);
         }
 
+        [Authorize(Policy = "SuperAdmin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, AccountDtoIn accountDTO)
         {
@@ -82,6 +84,7 @@ namespace BankAPI.Controllers
 
         }
 
+        [Authorize(Policy = "SuperAdmin")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

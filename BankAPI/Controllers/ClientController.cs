@@ -34,6 +34,8 @@ namespace BankAPI.Controllers
             }
             return client;
         }
+
+        [Authorize(Policy = "SuperAdmin")]
         [HttpPost]
         public async Task<IActionResult> Post(Client client)
         {
@@ -42,6 +44,7 @@ namespace BankAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newClient.Id }, newClient);
         }
 
+        [Authorize(Policy = "SuperAdmin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Client client)
         {
@@ -62,6 +65,7 @@ namespace BankAPI.Controllers
 
         }
 
+        [Authorize(Policy = "SuperAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
